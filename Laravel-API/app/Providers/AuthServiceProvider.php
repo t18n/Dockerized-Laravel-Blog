@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Providers;
+
+use Carbon\Carbon;
+use Laravel\Passport\Passport;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Route;
+
+
+class AuthServiceProvider extends ServiceProvider
+{
+    /**
+     * The policy mappings for the application.
+     *
+     * @var array
+     */
+    protected $policies = [
+        'App\Models\Post' => 'App\Policies\PostPolicy',
+    ];
+
+    /**
+     * Register any authentication / authorization services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        $this->registerPolicies();
+
+        //Passport::routes();
+        
+        //Enable cors for routes
+        Route::group(['middleware' => 'cors'], function() {
+            Passport::routes();
+        });
+
+        // Configure Passport to issue short-lived tokens
+        // Passport::tokensExpireIn(Carbon::now()->addDays(1));
+        // Passport::refreshTokensExpireIn(Carbon::now()->addDays(10));
+    }
+}

@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  api:
+    hostname: api.local
+    
+    image: laraedit/laraedit
+
+    ports:
+      - 8083:80
+    
+    volumes:
+      - ./Laravel-API/:/var/www/html/app
+    
+    depends_on:
+      - db
+    
+    links:
+      - db
+
+  fe:
+    hostname: fe.local
+    
+    image: webdevops/php-nginx:7.2
+
+    ports:
+      - 8084:80
+    
+    volumes:
+      - ./Laravel-FE:/app
+    
+    depends_on:
+      - db
+      - api
+
+    links:
+      - db
+      - api
+  
+  db:
+    image: mysql:5.7
+
+    ports:
+      - 33007:3306
+
+    environment: 
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_USER: turbo
+      MYSQL_PASSWORD: secret
